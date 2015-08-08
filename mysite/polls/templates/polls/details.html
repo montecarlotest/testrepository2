@@ -1,0 +1,30 @@
+{% extends "polls/base_site.html" %}
+{% block content %}
+<div id="content-main">
+	<label>Text:</label><label>{{question.question_text}}</label>
+	<br/>
+	<label>Date:</label><label>{{question.pub_date}}</label>
+	<br/>
+	{%  if error_message %}
+		<p><strong>{{error_message}}</strong></p>
+	{% endif %}
+	{% if question.choice_set.all %}
+		<!--<ul>
+		{% for choice in question.choice_set.all %}
+			<li>{{choice.choice_text}}</li>
+		{% endfor %}
+		</ul>-->
+		<form  action="{% url 'polls:voteView' question.id %}" method="post">
+			{%  csrf_token %}
+			{% for choice in question.choice_set.all %}
+				<input type="radio" name="choice" id="choice{{forloop.counter}}" value="{{choice.id}}"/>
+				<label for="choice{{forloop.counter}}">{{choice.choice_text}}</label>
+				<br/>
+			{%  endfor %}
+			<input type="submit" value="Vote">
+		</form>
+	{% else %}
+		<p>No Votes yet!</p>
+	{% endif %}
+</div>
+{% endblock %}
