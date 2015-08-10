@@ -1,0 +1,66 @@
+﻿{% extends 'polls/base.html'%}
+{% block content %}
+    <div>
+		{% for bill in bills%}
+        <p>Bill for the <storng>{{bill.bill_date.month}}</storng> month of <strong>{{bill.bill_date.year}}</strong></p>
+			<table>
+			<tr>
+				<th>Name</th>
+				<th>StartDate</th>
+				<th>StartDate</th>
+                <th>StartReading</th>
+				<th>EndReading</th>
+				<th>Tolls</th>
+                <th>Sum</th>
+			</tr>
+			<tr> 
+				<td>{{ bill.gasfee.name }}</td>
+				<td>{{ bill.gasfee.start_date }}</td>
+				<td>{{ bill.gasfee.end_date }}</td>
+                <td>{{ bill.gasfee.start }}</td>
+                <td>{{ bill.gasfee.end }}</td>
+				<td>{{ bill.gasfee.tolls }}</td>
+                <td></td>
+			</tr>
+			<tr> 
+				<td>{{ bill.waterfee.name }}</td>
+				<td>{{ bill.waterfee.start_date }}</td>
+				<td>{{ bill.waterfee.end_date }}</td>
+                <td>{{ bill.waterfee.start }}</td>
+                <td>{{ bill.waterfee.end }}</td>
+				<td>{{ bill.waterfee.tolls }}</td>
+                <td></td>
+			</tr>
+			<tr> 
+				<td>{{ bill.elecfee.name }}</td>
+				<td>{{ bill.elecfee.start_date }}</td>
+				<td>{{ bill.elecfee.end_date }}</td>
+                <td>{{ bill.elecfee.start }}</td>
+                <td>{{ bill.elecfee.end }}</td>
+				<td>{{ bill.elecfee.tolls }}</td>
+                <td></td>
+			</tr>
+			<tr> 
+				<td>{{ bill.propertymanagefee.name }}</td>
+				<td>{{ bill.propertymanagefee.start_date }}</td>
+				<td>{{ bill.propertymanagefee.end_date }}</td>
+                <td>{{ bill.propertymanagefee.start }}</td>
+                <td>{{ bill.propertymanagefee.end }}</td>
+				<td>{{ bill.propertymanagefee.tolls }}</td>
+                <td></td>
+			</tr>
+                <tr>
+				<td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                   <td></td>
+
+			</tr>
+			</table>
+        <br/>
+        {%endfor%}
+    </div>
+{% endblock  %}

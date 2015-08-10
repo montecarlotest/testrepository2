@@ -7,6 +7,7 @@ urlpatterns=[
 	url(r'^login/',views.login,{'message':""},name="loginView"),
 	url(r'^logout/$',views.logout,name="logoutView"),
 	url(r'^create/$',views.createQuestion,name="createView"),
+	url(r'^tolls/$',views.tolls,name="tollsView"),
 	url(r'^register/$',views.register,name="registerView"),
 	url(r'^registerError/$',views.registerError,name="registerErrorView"),
 	url(r'^reg/$',views.reg,name="regView"),

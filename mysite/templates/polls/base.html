@@ -2,38 +2,53 @@
 {% load staticfiles %}<!DOCTYPE html>
 {% get_current_language as LANGUAGE_CODE %}{% get_current_language_bidi as LANGUAGE_BIDI %}
 <html lang="{{ LANGUAGE_CODE|default:"en-us" }}" {% if LANGUAGE_BIDI %}dir="rtl"{% endif %}>
-<head>
-<title>{% block title %}{% endblock %}</title>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="icon" href="../../favicon.ico">
 
-<link rel="stylesheet" type="text/css" href="{% block stylesheet %}{% static "admin/css/base.css" %}{% endblock %}" />
-    <link rel="stylesheet" type="text/css" href="{% static "polls/style.css" %}" />
-{% block extrastyle %}{% endblock %}
-<!--[if lte IE 7]><link rel="stylesheet" type="text/css" href="{% block stylesheet_ie %}{% static "admin/css/ie.css" %}{% endblock %}" /><![endif]-->
-{% if LANGUAGE_BIDI %}<link rel="stylesheet" type="text/css" href="{% block stylesheet_rtl %}{% static "admin/css/rtl.css" %}{% endblock %}" />{% endif %}
+    <title>{% block title %}{% endblock %}</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="{% static 'polls/bootstrap.min.css' %}" rel="stylesheet">
+<link rel="stylesheet" type="text/css" href="{% block stylesheet %}{% static 'admin/css/base.css' %}{% endblock %}" />
+    <!-- Custom styles for this template -->
+    <link href="{% static 'polls/dashboard.css' %}" rel="stylesheet">
+
+    <!-- Just for debugging purposes. Don't actually copy these 2 lines! -->
+    <!--[if lt IE 9]><script src="{% static 'poll/js/ie8-responsive-file-warning.js' %}"></script><![endif]-->
+    <script src="{% static 'polls/js/ie-emulation-modes-warning.js' %}"></script>
 <script type="text/javascript">window.__admin_media_prefix__ = "{% filter escapejs %}{% static "admin/" %}{% endfilter %}";</script>
 <script type="text/javascript">window.__admin_utc_offset__ = "{% filter escapejs %}{% now "Z" %}{% endfilter %}";</script>
 {% block extrahead %}{% endblock %}
 {% block blockbots %}<meta name="robots" content="NONE,NOARCHIVE" />{% endblock %}
 </head>
 {% load i18n %}
+{% block extrastyle %}{% endblock %}
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+  </head>
 
-<body class="{% if is_popup %}popup {% endif %}{% block bodyclass %}{% endblock %}">
+  <body>
 
-<!-- Container -->
-<div id="container">
-
-    {% if not is_popup %}
+    <nav class="navbar navbar-inverse navbar-fixed-top">
+       {% if not is_popup %}
     <!-- Header -->
     <div id="header">
         <div id="branding">
         {% block branding %}{% endblock %}
         </div>
         {% block usertools %}
-        <p>{{user}}</p>
-        <p>{{user.is_authenticated}}</p>
-        
+        {% if user.is_active %}
+
         <div id="user-tools">
-        {% if user.is_authenticated %}
             {% block welcome-msg %}
                 {% trans 'Welcome,' %}
                 <strong>{% firstof user.get_short_name user.get_username %}</strong>.
@@ -48,52 +63,62 @@
                         <a href="{{ docsroot }}">{% trans 'Documentation' %}</a> /
                     {% endif %}
                 {% endif %}
-                
-                <a href="{% url 'polls:logoutView' %}">{% trans 'Log out' %}</a>
+                {% if user.has_usable_password %}
+                <a href="{% url 'admin:password_change' %}">{% trans 'Change password' %}</a> /
+                {% endif %}
+                <a href="{% url 'admin:logout' %}">{% trans 'Log out' %}</a>
             {% endblock %}
-        {% else %}
-        <a href="{% url 'polls:loginView' %}">{% trans 'Login' %}</a> |
-        <a href="{% url 'polls:registerView'  %}">{% trans 'Register' %}</a>|
-        <a href="{% url 'polls:createView'  %}">{% trans 'createQuestion' %}</a>
-        {% endif %}
         </div>
-        
+        {% endif %}
         {% endblock %}
         {% block nav-global %}{% endblock %}
     </div>
     <!-- END Header -->
     {% block breadcrumbs %}
     <div class="breadcrumbs">
-    <a href="{% url 'admin:index' %}">{% trans 'Home' %}</a>
+    <a href="{% url 'polls:indexView' %}">{% trans 'Home' %}</a>
     {% if title %} &rsaquo; {{ title }}{% endif %}
     </div>
     {% endblock %}
     {% endif %}
 
-    {% block messages %}
-        {% if messages %}
-        <ul class="messagelist">{% for message in messages %}
-          <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message|capfirst }}</li>
-        {% endfor %}</ul>
-        {% endif %}
-    {% endblock messages %}
+    </nav>
 
-    <!-- Content -->
-    <div id="content" class="{% block coltype %}colM{% endblock %}">
-        {% block pretitle %}{% endblock %}
-        {% block content_title %}{% if title %}<h1>{{ title }}</h1>{% endif %}{% endblock %}
-        {% block content %}
-        {% block object-tools %}{% endblock %}
-        {{ content }}
-        {% endblock %}
-        {% block sidebar %}{% endblock %}
-        <br class="clear" />
+
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-sm-3 col-md-2 sidebar">
+          <ul class="nav nav-sidebar">
+            <li class="active"><a href="/polls/">Basic Information <span class="sr-only">(current)</span></a></li>
+            <li><a href="/polls/tolls">Tolls</a></li>
+
+          </ul>
+
+        </div>
+        <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+
+
+          <div class="row placeholders">
+
+          </div>
+
+          <div class="table-responsive">
+           {% block content %}
+              {{content}}
+              {% endblock %}
+          </div>
+        </div>
+      </div>
     </div>
-    <!-- END Content -->
 
-    {% block footer %}<div id="footer"></div>{% endblock %}
-</div>
-<!-- END Container -->
-
-</body>
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="{% static 'polls/js/jquery.min.js' %}"></script>
+    <script src="{% static 'polls/js/bootstrap.min.js' %}"></script>
+    <!-- Just to make our placeholder images work. Don't actually copy the next line! -->
+    <script src="{% static 'polls/js/holder.min.js' %}"></script>
+    <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
+    <script src="{% static 'polls/js/ie10-viewport-bug-workaround.js' %}"></script>
+  </body>
 </html>

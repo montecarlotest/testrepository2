@@ -99,7 +99,7 @@ def logout(request):
 		auth_logout(request)
 		print("after")
 		print(request.user)
-		return HttpResponseRedirect("/polls/")
+		return HttpResponseRedirect("/polls/login")
 
 	#return render(request,"polls/login.html",{});
 
@@ -115,6 +115,8 @@ def auth(request):
 		if user.is_active:
 			print("User is valid, active and authenticated")
 			auth_login(request,user)
+			print("test login")
+			print(request.GET.get("next"))
 			return HttpResponseRedirect("/polls/")
 		else:
 			print("The password is valid, but the account has been disabled!")
@@ -157,6 +159,16 @@ def createQuestion(request):
 		return HttpResponseRedirect("/admin")
 	else:
 		return HttpResponse("sorry you do not have the permission to crate question")
+
+def tolls(request):
+	if request.user.is_superuser:
+		auth_logout(request)
+		return HttpResponseRedirect("/polls/login/?next=/polls/tolls")
+	elif request.user.is_authenticated()==False:
+		return HttpResponseRedirect("/polls/login/?next=/polls/tolls")
+	bills=request.user.bill_set.all();
+	return render(request,"polls/tolls.html",{"bills":bills})
+	#return render(request,"polls/tolls.html",{})
 
 
 
